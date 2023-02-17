@@ -9,7 +9,13 @@
 #define DLL_EXPORT __attribute__((visibility("default")))
 #endif
 
+typedef int (*exampleFunction_fptr_t)(int a, int b, int c);
+
+static exampleFunction_fptr_t exampleFunction_original = nullptr;
+
 int exampleFunction_hook(int a, int b, int c) {
+    int ret = exampleFunction_original(a, b, c);
+    printf("[+] org ret = %d\n", ret);
     printf("[+] %s(a=%d, b=%d, c=%d)\n", __FUNCTION__, a, b, c);
     return 42;
 }
@@ -20,10 +26,10 @@ extern "C" DLL_EXPORT void onStartup() {
 
     void *handle = dlopen("libmodule.so", RTLD_NOW);
     printf("handle = %p\n", handle);
-    void *targetFunction = dlsym(handle, "exampleFunction");
-    printf("targetFunction = %p\n", targetFunction);
+    exampleFunction_original = (exampleFunction_fptr_t) dlsym(handle, "exampleFunction");
+    printf("exampleFunction_original = %p\n", (void *) exampleFunction_original);
 
-    ret = funchook_prepare(funchook, (void **) &targetFunction, (void *) exampleFunction_hook);
+    ret = funchook_prepare(funchook, (void **) &exampleFunction_original, (void *) exampleFunction_hook);
     if (ret != 0) {
         printf("[-] funchook_prepare failed, ret = %d\n", ret);
         return;
