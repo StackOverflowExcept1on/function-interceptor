@@ -1,5 +1,7 @@
 ### function-interceptor
 
+[![Build Status](https://github.com/StackOverflowExcept1on/function-interceptor/actions/workflows/ci.yml/badge.svg)](https://github.com/StackOverflowExcept1on/function-interceptor/actions/workflows/ci.yml)
+
 This project demonstrates how to hook functions through the [funchook](https://github.com/kubo/funchook) library
 
 ### Requirements
